@@ -10,7 +10,7 @@ class Table:
     __headers: List[str]
     __isOpen: bool = False
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, isHeader: bool = True):
         try:
             self.__file = open(path)
         except ...:
@@ -20,10 +20,17 @@ class Table:
         self.__file.seek(0)
         self.__isOpen = True
         reader = csv.reader(self.__file, delimiter=delimiter)
-        self.__headers = next(reader)
+        if isHeader:
+            self.__headers = next(reader)
         self.__file.seek(0)
         self.__reader = csv.DictReader(self.__file, delimiter=delimiter)
         self.__tableName = Path(path).stem
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.__file.close()
 
     def isTableOpen(self) -> bool:
         return self.__isOpen
@@ -36,6 +43,11 @@ class Table:
 
     def isHeadersInTable(self, headers: List[str]) -> bool:
         return not len(list(filter(lambda head: head not in self.__headers, headers)))
+
+    @staticmethod
+    def strToList(string: str) -> list:
+        delimiter = csv.Sniffer().sniff(string).delimiter
+        return string.split(str(delimiter))
 
     def __del__(self):
         self.__file.close()
