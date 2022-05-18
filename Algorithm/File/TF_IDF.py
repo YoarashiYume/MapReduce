@@ -18,8 +18,6 @@ class TFIDF(MRJob):
 
     def load_args(self, args) -> None:
         super().load_args(args)
-        if not self.options.countOfFiles.isdigit():
-            raise "Incorrect/missing \"countOfFiles\" arg"
 
     def mapper_raw_firstStep(self, input_path, input_uri) -> None:
         WORD_RE = re.compile(r"[\w']+")

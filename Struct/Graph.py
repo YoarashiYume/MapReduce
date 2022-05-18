@@ -1,6 +1,9 @@
 import re
 from math import inf
-from typing import TextIO, Optional, Dict, List
+from typing import TextIO, Optional, Dict, List, Any
+
+from FileReader import FileReader
+
 
 
 class Node:
@@ -10,15 +13,18 @@ class Node:
 
 
 class Graph:
-    __file: TextIO = None
+    __file: Any = None
     __isOpen: bool = False
     __isList: bool = False
     __initialNodeName: str = None
     __Header: List[str] = []
 
-    def __init__(self, path: str, initialDot: str):
+    def __init__(self, path: str, initialDot: str, fReader: FileReader = None):
         try:
-            self.__file = open(path)
+            if not fReader:
+                self.__file = open(path)
+            else:
+                self.__file = fReader
             self.__isList = self.__determinateType()
         except ...:
             self.__file.close()

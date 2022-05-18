@@ -11,7 +11,7 @@ class Select(Union):
         super().__init__(args)
 
     def configure_args(self) -> None:
-        super().configure_args()
+        super(Select, self).configure_args()
         self.add_passthru_arg('--select', type=str, default='[*]', help='[arg1,arg2,...argN]')
         self.add_passthru_arg('--where', type=str, default='[]', help='[Arg1=value1,Arg2<value2,...ArgN=valueN]')
 
@@ -54,19 +54,9 @@ class Select(Union):
                     return False
         return True
 
-    def __isTablesHeaderCorrect(self, table: Table) -> bool:
-        if not self.__selectedField == ['*'] and not table.isHeadersInTable(self.__selectedField):
-            return False
-        listOfField = [x[0] for x in self.__comparable]
-        if len(listOfField) and not table.isHeadersInTable(listOfField):
-            return False
-        return True
 
     def mapper_raw(self, input_path, input_uri) -> None:
         table = Table(path=input_path)
-        if not self.__isTablesHeaderCorrect(table):
-            del table
-            raise Exception("Incorrect headers")
         try:
             while True:
                 row = table.next()

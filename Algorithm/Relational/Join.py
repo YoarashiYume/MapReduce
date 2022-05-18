@@ -1,5 +1,4 @@
 import itertools
-from pathlib import Path
 from typing import List, Dict
 from collections import defaultdict
 
@@ -16,16 +15,12 @@ class RepartitionJoin(Union):
         super().configure_args()
         self.add_passthru_arg('--keys', type=str, default={}, help='[firstTableKey,secondTableKey,...nTableKey]')
 
-    def __isInintLoad(self) -> bool:
-        return not (self.options.run_combiner | self.options.run_mapper | self.options.run_reducer)
-
     def load_args(self, args):
         super().load_args(args)
         keyList = list(map(str, self.options.keys.strip('[]').split(',')))
-        if self.__isInintLoad() and len(keyList) != len(self.options.args):
-            raise "Incorrect count of key`s"
-        for table, key in zip(self.options.args, keyList):
-            self.__TableKey[Path(table).stem] = key
+        for el in keyList:
+            [table, key] = el.split(':')
+            self.__TableKey[table] = key
 
     def mapper_raw(self, input_path, input_uri) -> None:
         table = Table(path=input_path)

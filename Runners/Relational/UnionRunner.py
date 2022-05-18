@@ -1,7 +1,7 @@
-import csv
-from .BaseRunner import BaseRunner
+
+from Struct.BaseRunner import BaseRunner, T
 from Algorithm.Relational.Union import Union
-from Algorithm.Relational.Table import Table
+from Struct.Table import Table
 
 
 class UnionRunner(BaseRunner):
@@ -10,31 +10,28 @@ class UnionRunner(BaseRunner):
     _headerSize: int = 0
     _delimiter: str = str()
 
-    def __init__(self, args: str = None):
-        super().__init__(Union, args, True)
+    def __init__(self, args: str = None, jobType: Union = Union, checkFileInput: bool = True):
+        super().__init__(args,jobType, checkFileInput)
 
     def _setExtraArgs(self) -> None:
         super()._setOption('--isHeader', len(self._header))
 
     def _checkFile(self) -> bool:
         fileList = super()._getInputPaths()
-        fileReader: super()._fileReader = super()._fileReader(self)
-        fileReader.open(fileList[0])
-        header = fileReader.readLine()[:-1]
-        self._delimiter = str(csv.Sniffer().sniff(header).delimiter)
-        self._header = header.split(self._delimiter)
-        self._headerSize = len(self._header)
+        table = Table(fileList[0], True, self._fileReader)
+        self._header = table.getHeader()
+        self._delimiter = table.getDelimiter()
+        self._headerSize = len (self._header)
         result: bool = True
         for path in fileList[1:]:
-            fileReader.open(path)
-            nextHeader = fileReader.readLine()[:-1].split(self._delimiter)
+            nextHeader = Table(path, True, self._fileReader).getHeader()
             if len(self._header):
                 if not nextHeader == self._header:
                     self._header.clear()
-            elif not self._headerSize == len(nextHeader):
+            if not self._headerSize == len(nextHeader):
                 result = False
                 break
-        fileReader.close()
+        self._fileReader.close()
         return result
 
 

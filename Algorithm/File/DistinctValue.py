@@ -34,7 +34,7 @@ class DistinctValue(MRJob):
                 ]
 
 
-class DistinctValueMemUnDetect(MRJob):
+class DistinctValueMemUnDetect(DistinctValue):
     _dictionary: Dict[str, Set[str]]
     _categoryCounter: Dict[str, int] = {}
 

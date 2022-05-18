@@ -28,7 +28,7 @@ class CrossCorrelation(MRJob):
                        reducer=self.reducer)]
 
 
-class CrossCorrelationMemUnDetect(MRJob):
+class CrossCorrelationMemUnDetect(CrossCorrelation):
     WORD_RE = re.compile(r"[\w']+")
 
     def __init__(self, args=None) -> None:

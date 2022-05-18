@@ -35,7 +35,7 @@ class WordCounterMemUnDetect(WordCounter):
 
     def mapper(self, _, line: str) -> None:
         for word in self._WORD_RE.findall(line):
-            self._dictionary[word] += 1
+            self._dictionary[word.lower()] += 1
 
     def mapper_final(self) -> None:
         for [word, count] in self._dictionary.items():
@@ -60,10 +60,10 @@ class WordCounterMemDetect(WordCounterMemUnDetect):
     def mapper(self, _, line: str) -> None:
         for word in self._WORD_RE.findall(line):
             try:
-                self._dictionary[word] += 1
+                self._dictionary[word.lower()] += 1
             except MemoryError:
                 self.__mapYielder()
-                self._dictionary[word] = 1
+                self._dictionary[word.lower()] = 1
 
     def steps(self) -> List[MRStep]:
         return [MRStep(mapper_init=super().mapper_init,

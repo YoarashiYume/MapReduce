@@ -29,8 +29,6 @@ class Difference(SymmetricDifference):
 
     def load_args(self, args) -> None:
         super().load_args(args)
-        if not len(self.options.reduced):
-            raise "Incorrect args"
         self.__reducedTable = Path(self.options.reduced).stem
 
     def reducer(self, row: list, tableList: List[str]) -> None:

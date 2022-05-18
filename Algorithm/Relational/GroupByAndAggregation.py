@@ -39,6 +39,7 @@ class GroupByAndAggregation(Union):
         return str(int(self.__max(rows, arg)) - int(self.__min(rows, arg)))
 
     def __getAggregation(self, funcName: str):
+        funcName = funcName.lower()
         if funcName == 'avg': return self.__avg
         if funcName == 'sum': return self.__sum
         if funcName == 'max': return self.__max
@@ -56,17 +57,8 @@ class GroupByAndAggregation(Union):
             self.__aggregationDict[aggregationList[i]] = aggregationFunction[0] if len(aggregationFunction) == 1 \
                 else aggregationFunction[i] if i < len(aggregationFunction) else None
 
-    def __isTablesHeaderCorrect(self, table: Table) -> bool:
-        if len(self.__groupList) and not table.isHeadersInTable(self.__groupList):
-            return False
-        if len(self.__aggregationDict.keys()) and not table.isHeadersInTable(list(self.__aggregationDict.keys())):
-            return False
-        return True
-
     def mapper_raw(self, input_path, input_uri) -> None:
         table = Table(path=input_path)
-        if not self.__isTablesHeaderCorrect(table):
-            raise "Incorrect GroupBy/aggregationBy args"
         if not table.isTableOpen():
             return  # or raise&
         try:
@@ -94,7 +86,8 @@ class GroupByAndAggregation(Union):
             yield list(map(lambda value: value[1], el.items())), list(map(lambda value: value[1], result.items()))
 
     def reducerGroup(self, groupedList: list, rows: List[dict]) -> None:
-        yield groupedList, list(map(lambda value: value[1], self.__aggrigationFunc(rows).items()))
+        rowList = list(rows)
+        yield groupedList, list(map(lambda value: value[1], self.__aggrigationFunc(rowList).items()))
 
     def steps(self) -> List[MRStep]:
         return [MRStep(mapper_raw=self.mapper_raw,

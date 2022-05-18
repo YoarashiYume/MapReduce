@@ -1,5 +1,7 @@
 import os
 import re
+import ntpath
+from urllib.parse import urlparse
 import sys
 from mrjob.job import MRJob
 from pathlib import Path
@@ -7,45 +9,17 @@ from subprocess import Popen, PIPE
 from typing import List, Dict, Generic, TypeVar
 from collections import defaultdict
 from mrjob.runner import MRJobRunner
+
+
+from .FileReader import FileReader
+
 import enum
 
 T = TypeVar("T")
 
 
 class BaseRunner(Generic[T]):
-    class _fileReader:
-        __out = None
-        __streamHDFS = None
-        __streamLocal = None
 
-        def __init__(self, outer):
-            self.__out = outer
-
-        def close(self):
-            if self.__streamHDFS:
-                self.__streamHDFS.kill()
-            if self.__streamLocal:
-                self.__streamLocal.close()
-
-        def open(self, path: str) -> int:
-            self.close()
-            try:
-                if not path.find(self.__out.HDFS_PREFIX, 0, len(self.__out.HDFS_PREFIX)):
-                    self.__streamHDFS = Popen(f'{self.__out.HDFS_PATH} dfs -cat {path}', shell=True, stdout=PIPE)
-                else:
-                    self.__streamLocal = open(path, 'r')
-                return 0
-            except (FileExistsError, FileNotFoundError) as e:
-                return e.args[0]
-
-        def readLine(self) -> str:
-            if self.__streamLocal:
-                return self.__streamLocal.readline()
-            elif self.__streamHDFS:
-                return self.__streamHDFS.stdout.readline().decode(self.__out.DECODE)
-
-        def __del__(self):
-            self.close()
 
     class __parseState(enum.Enum):
         input = 'raw_input'
@@ -58,6 +32,7 @@ class BaseRunner(Generic[T]):
     DECODE = 'utf-8'
     __options: Dict[str, List[str]] = defaultdict(list)
     __job: type = None
+    _fileReader: FileReader = None
 
     def _isOption(self, opt: str) -> bool:
         return opt in self.__options
@@ -69,8 +44,24 @@ class BaseRunner(Generic[T]):
             res: list = [str(value)]
             self.__options[opt] = res
 
+    def _checkOption(self) -> bool:
+        return True
+
     def _getOption(self, opt: str) -> list:
         return self.__options[opt]
+
+    def __getFileName(self, path):
+        if path.find(self.HDFS_PREFIX, 0, len(self.HDFS_PREFIX)):
+            a = urlparse(path)
+            return os.path.basename(a.path)
+        head, tail = ntpath.split(path)
+        return tail or ntpath.basename(head)
+
+    def _getInputFileNames(self):
+        result = []
+        for el in self._getInputPaths():
+            result.append(self.__getFileName(el))
+        return result
 
     def _getInputPaths(self):
         result = self.__options['local_input']
@@ -80,22 +71,26 @@ class BaseRunner(Generic[T]):
     def __cmdArgPars(self):
         return ''.join([i + ' ' for i in sys.argv[1:]])[:-1]
 
-    def __init__(self, jobType: T, args: str = None, checkFileInput: bool = False):
+    def __init__(self, args: str = None, jobType: T = None, checkFileInput: bool = False):
         self.__job = jobType
+        self._fileReader = FileReader(self)
         if not issubclass(self.__job, MRJob):
             raise Exception("Incorrect Type")
+        self._setExtraArgs()
         self.__argsParser(args if args else self.__cmdArgPars())
         if checkFileInput:
             if not self._checkFile():
-                raise Exception('Verification failed')
-        self._setExtraArgs()
+                raise Exception('File verification failed')
+        if not self._checkOption():
+            raise Exception('Option verification failed')
+
 
     def __optionParse(self, option: str) -> None:
         result: List[str] = option.split('=')
-        if len(result) <= 1:
+        if len(result) <= 1 and result[0].find(self.__parseState.optionPrefix.value, 0, len(self.__parseState.optionPrefix.value)):
             raise Exception(f"Incorrect option {option}")
         optHead = result.pop(0)
-        self.__options[optHead].append(''.join(result))
+        self.__options[optHead] = [option[option.find('=')+1:]]
 
     def __argsParser(self, args: str) -> None:
         currentState = None

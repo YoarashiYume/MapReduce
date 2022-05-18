@@ -1,6 +1,6 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
-from .Table import Table, List
+from Struct.Table import Table, List
 
 
 class Union(MRJob):
