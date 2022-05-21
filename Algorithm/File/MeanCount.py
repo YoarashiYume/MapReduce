@@ -42,7 +42,7 @@ class MeanCounter(MRJob):
                        reducer=self.reducer)]
 
 
-class WordCounterMemUnDetect(MeanCounter):
+class MeanCounterMemUnDetect(MeanCounter):
     _sumDictionary: Dict[str, float]
     _countDictionary: Dict[str, int]
 
@@ -77,7 +77,7 @@ class WordCounterMemUnDetect(MeanCounter):
                        reducer=super().reducer)]
 
 
-class WordCounterMemDetect(WordCounterMemUnDetect):
+class MeanCounterMemDetect(MeanCounterMemUnDetect):
     def __init__(self, args=None) -> None:
         super().__init__(args)
 
