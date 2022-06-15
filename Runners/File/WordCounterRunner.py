@@ -1,8 +1,9 @@
+"""Класс для запуска алгоритмов"""
 from Algorithm.File import WordCounter
 from Struct.BaseRunner import BaseRunner
 
 
-class WorldCounterRunner(BaseRunner):
+class WordCounterRunner(BaseRunner):
 
     def __init__(self, args: str = None, jobType: WordCounter = WordCounter):
         super().__init__(args, jobType, False)

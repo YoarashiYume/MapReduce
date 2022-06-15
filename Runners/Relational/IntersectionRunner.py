@@ -1,7 +1,6 @@
-
+"""Класс для запуска алгоритма"""
 from Runners.Relational.UnionRunner import UnionRunner
 from Algorithm.Relational.Intersection import Intersection
-from Struct.BaseRunner import T
 
 class IntersectionRunner(UnionRunner):
 

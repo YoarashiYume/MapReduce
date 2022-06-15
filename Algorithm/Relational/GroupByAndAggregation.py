@@ -1,3 +1,4 @@
+"""Код алгоритма"""
 from typing import List, Dict
 from .Union import Union, Table, MRStep
 
@@ -59,17 +60,16 @@ class GroupByAndAggregation(Union):
 
     def mapper_raw(self, input_path, input_uri) -> None:
         table = Table(path=input_path)
-        if not table.isTableOpen():
-            return  # or raise&
-        try:
-            while True:
-                row = table.next()
-                if not row:
-                    break
-                yield list(map(lambda value: value[1],
+        if table.isTableOpen():
+            try:
+                while True:
+                    row = table.next()
+                    if not row:
+                        break
+                    yield list(map(lambda value: value[1],
                                filter(lambda value: value[0] in self.__groupList, row.items()))), row
-        finally:
-            del table
+            finally:
+                del table
 
     def __aggrigationFunc(self, row: List[dict]) -> dict:
         result: dict = {}

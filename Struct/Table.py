@@ -1,5 +1,5 @@
 import csv
-from typing import Optional, List, TextIO, Any
+from typing import Optional, List, Any
 from pathlib import Path
 
 from .FileReader import FileReader

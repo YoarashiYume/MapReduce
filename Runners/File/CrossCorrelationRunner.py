@@ -1,3 +1,4 @@
+"""Класс для запуска алгоритмов"""
 from Algorithm.File import CrossCorrelation
 from Struct.BaseRunner import BaseRunner
 

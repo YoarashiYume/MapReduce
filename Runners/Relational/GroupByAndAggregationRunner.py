@@ -1,6 +1,6 @@
+"""Класс для запуска алгоритма"""
 from Runners.Relational.UnionRunner import UnionRunner
 from Algorithm.Relational.GroupByAndAggregation import GroupByAndAggregation
-from Struct.BaseRunner import T
 from Struct.Table import Table
 
 

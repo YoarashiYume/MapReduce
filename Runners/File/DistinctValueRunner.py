@@ -1,3 +1,4 @@
+"""Класс для запуска алгоритмов"""
 from Algorithm.File import DistinctValue
 from Struct.BaseRunner import BaseRunner
 

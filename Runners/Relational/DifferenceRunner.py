@@ -1,7 +1,6 @@
-
+"""Классы для запуска алгоритмов"""
 from Runners.Relational.UnionRunner import UnionRunner
 from Algorithm.Relational.Difference import SymmetricDifference, Difference
-from Struct.BaseRunner import T
 
 class SymmetricDifferenceRunner(UnionRunner):
 

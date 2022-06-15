@@ -1,3 +1,4 @@
+"""Класс для запуска алгоритма"""
 from Runners.Relational.SelectRunner import SelectRunner
 from Algorithm.Relational.Projection import Projection
 

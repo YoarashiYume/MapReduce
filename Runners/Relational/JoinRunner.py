@@ -1,8 +1,9 @@
-
+"""Класс для запуска алгоритма"""
 from Runners.Relational.UnionRunner import UnionRunner
 from Algorithm.Relational.Join import RepartitionJoin
 from pathlib import Path
 from Struct.Table import Table
+
 
 class JoinRunner(UnionRunner):
 
@@ -13,7 +14,6 @@ class JoinRunner(UnionRunner):
         super(JoinRunner, self)._setExtraArgs()
         super()._setOption('--keys', '')
 
-
     def _checkFile(self) -> bool:
         #fileList = super()._getInputPaths()
         #table = Table(fileList[0], True, self._fileReader)
@@ -21,7 +21,6 @@ class JoinRunner(UnionRunner):
         #self._delimiter = table.getDelimiter()
         #self._headerSize = len(self._header)
         return True
-
 
     def _checkOption(self) -> bool:
         opt = super()._getOption('--keys')[0]

@@ -1,5 +1,5 @@
+"""Класс для запуска алгоритма"""
 import re
-
 from Runners.Relational.UnionRunner import UnionRunner
 from Algorithm.Relational.Select import Select
 
@@ -36,7 +36,6 @@ class SelectRunner(UnionRunner):
             for el in opt:
                 part = list(map(str, el.strip('[]').split(',')))
                 for item in part:
-                    #item = item.replace(" ", "")
                     temp = re.split(r'([<>=]+)', item)
                     if not len(temp) == 3 or temp[0] not in self._header or (not len(temp[1]) == 1 or temp[1] not in ['>', '<', '=']):
                         print("Incorrect '--where' args")

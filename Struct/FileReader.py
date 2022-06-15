@@ -2,12 +2,12 @@ from subprocess import Popen, PIPE
 
 
 class FileReader:
-    __out = None
+    __enviroment = None
     __streamHDFS = None
     __streamLocal = None
 
     def __init__(self, outer = None):
-        self.__out = outer
+        self.__enviroment = outer
 
     def __iter__(self):
         if self.__streamLocal:
@@ -24,8 +24,8 @@ class FileReader:
     def open(self, path: str) -> int:
         self.close()
         try:
-            if not path.find(self.__out.HDFS_PREFIX, 0, len(self.__out.HDFS_PREFIX)):
-                self.__streamHDFS = Popen(f'{self.__out.HDFS_PATH} dfs -cat {path}', shell=True, stdout=PIPE)
+            if not path.find(self.__enviroment.HDFS_PREFIX, 0, len(self.__enviroment.HDFS_PREFIX)):
+                self.__streamHDFS = Popen(f'{self.__enviroment.HDFS_PATH} dfs -cat {path}', shell=True, stdout=PIPE)
             else:
                 self.__streamLocal = open(path, 'r')
             return 0
@@ -36,7 +36,7 @@ class FileReader:
         if self.__streamLocal:
             return self.__streamLocal.readline()
         elif self.__streamHDFS:
-            return self.__streamHDFS.stdout.readline().decode(self.__out.DECODE)
+            return self.__streamHDFS.stdout.readline().decode(self.__enviroment.DECODE)
 
     def seek(self, pos: int):
         if self.__streamLocal:

@@ -1,3 +1,4 @@
+"""Код алгоритма"""
 from .Union import Union, MRStep, List
 
 

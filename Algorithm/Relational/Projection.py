@@ -1,3 +1,4 @@
+"""Код алгоритма"""
 from .Select import Select, List, MRStep
 
 

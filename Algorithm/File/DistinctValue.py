@@ -1,3 +1,4 @@
+"""Коды алгоритмов"""
 from collections import defaultdict
 from typing import List, Tuple, Dict, Set
 

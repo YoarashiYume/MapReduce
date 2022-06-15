@@ -1,3 +1,4 @@
+"""Код алгоритма"""
 import itertools
 from typing import List, Dict
 from collections import defaultdict

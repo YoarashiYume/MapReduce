@@ -1,5 +1,5 @@
-
-from Struct.BaseRunner import BaseRunner, T
+"""Класс для запуска алгоритма"""
+from Struct.BaseRunner import BaseRunner
 from Algorithm.Relational.Union import Union
 from Struct.Table import Table
 
@@ -32,6 +32,7 @@ class UnionRunner(BaseRunner):
                 result = False
                 break
         self._fileReader.close()
+        super()._setOption('--isHeader', len(self._header))
         return result
 
 

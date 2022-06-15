@@ -1,3 +1,4 @@
+"""Код алгоритма"""
 from typing import List, Tuple
 import re
 from .Union import Union, Table, MRStep

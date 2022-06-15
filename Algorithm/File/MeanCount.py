@@ -1,3 +1,4 @@
+"""Коды алгоритмов"""
 from typing import List, Dict, Tuple
 
 from mrjob.job import MRJob

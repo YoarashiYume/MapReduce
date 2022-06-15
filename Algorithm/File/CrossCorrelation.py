@@ -1,3 +1,4 @@
+"""Коды алгоритмов"""
 import itertools
 import re
 from collections import defaultdict

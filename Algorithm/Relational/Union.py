@@ -1,3 +1,4 @@
+"""Код алгоритма"""
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 from Struct.Table import Table, List
@@ -16,13 +17,12 @@ class Union(MRJob):
 
     def mapper_raw(self, input_path, input_uri) -> None:
         with Table(path=input_path, isHeader=bool(self.options.isHeader)) as table:
-            if not table.isTableOpen():
-                return  # or raise&
-            while True:
-                row = table.next()
-                if not row:
-                    break
-                yield list(map(lambda value: value[1], row.items())), table.getTableName()
+            if table.isTableOpen():
+                while True:
+                    row = table.next()
+                    if not row:
+                        break
+                    yield list(map(lambda value: value[1], row.items())), table.getTableName()
 
     def reducer(self, row: list, _):
         yield row, None

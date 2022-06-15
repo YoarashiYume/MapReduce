@@ -1,3 +1,4 @@
+"""Класс для запуска алгоритма"""
 from Struct.BaseRunner import BaseRunner
 from Algorithm.File.TF_IDF import TFIDF
 

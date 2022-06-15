@@ -1,6 +1,7 @@
+
 import re
 from math import inf
-from typing import TextIO, Optional, Dict, List, Any
+from typing import Optional, Dict, List, Any
 
 from FileReader import FileReader
 

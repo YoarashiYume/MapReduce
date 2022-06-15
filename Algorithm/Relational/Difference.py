@@ -1,3 +1,4 @@
+"""Коды алгоритмов"""
 from pathlib import Path
 from .Union import Union, MRStep, List
 
